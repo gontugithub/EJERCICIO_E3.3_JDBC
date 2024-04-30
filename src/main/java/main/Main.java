@@ -13,6 +13,34 @@ public class Main {
     public static void main(String[] args) throws SQLException {
 
 
+
+
+
+
+
+
+
+
+
+
+    }
+
+
+    public static void inicioSesionUsuario(){
+
+        System.out.println(" NOMBRE: ");
+        String nombre = sc.next();
+        System.out.println(" CONTRASEÑA: ");
+        String password = sc.next();
+
+
+    }
+
+
+
+
+    public static void verCatalogoProductos(){
+
         int cont = 0;
         ArrayList<Producto> list = new ArrayList<>();
 
@@ -49,12 +77,12 @@ public class Main {
                 System.out.println(p.toString() +"\n");
             }
 
-        cont++;
+            cont++;
         } while ( cont < 6);
 
 
-
-
-
     }
+
+
+
 }
