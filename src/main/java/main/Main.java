@@ -1,6 +1,7 @@
 package main;
 
 import entidades.Producto;
+import queries.ClienteQueries;
 import queries.ProductoQueries;
 
 import java.sql.SQLException;
@@ -15,7 +16,7 @@ public class Main {
 
 
 
-
+ inicioSesionUsuario();
 
 
 
@@ -32,6 +33,12 @@ public class Main {
         String nombre = sc.next();
         System.out.println(" CONTRASEÑA: ");
         String password = sc.next();
+
+        if (ClienteQueries.comprobarUsuario(nombre,password) == -1){
+            // ERROR AL INICIAR SESION
+        }
+
+
 
 
     }
@@ -77,6 +84,13 @@ public class Main {
 
             cont++;
         } while ( cont < 6);
+
+
+    }
+
+    public static void seleccionProducto(){
+
+        System.out.println("AGREGA UN PRODUCTO A TU ");
 
 
     }
