@@ -37,8 +37,6 @@ public class Main {
     }
 
 
-
-
     public static void verCatalogoProductos(){
 
         int cont = 0;
