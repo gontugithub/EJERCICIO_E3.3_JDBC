@@ -5,20 +5,14 @@ public class Cliente {
     private int id;
     private String nombre;
 
-    private String password;
 
-    public Cliente(int id, String nombre, String password) {
+    public Cliente(){
+
+    }
+
+    public Cliente(int id, String nombre) {
         this.id = id;
         this.nombre = nombre;
-        this.password = password;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public int getId() {

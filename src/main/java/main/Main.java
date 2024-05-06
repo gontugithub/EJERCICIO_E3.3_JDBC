@@ -1,5 +1,8 @@
 package main;
 
+import entidades.Cliente;
+import entidades.Compra;
+import entidades.CompraProducto;
 import entidades.Producto;
 import queries.ClienteQueries;
 import queries.ProductoQueries;
@@ -16,7 +19,8 @@ public class Main {
 
 
 
- inicioSesionUsuario();
+    inicioSesionUsuario();
+    seleccionProducto();
 
 
 
@@ -29,14 +33,18 @@ public class Main {
 
     public static void inicioSesionUsuario(){
 
-        System.out.println(" NOMBRE: ");
-        String nombre = sc.next();
-        System.out.println(" CONTRASEÑA: ");
-        String password = sc.next();
+        Cliente usuariologeado;
 
-        if (ClienteQueries.comprobarUsuario(nombre,password) == -1){
-            // ERROR AL INICIAR SESION
+        System.out.print(" INTRODUCE SU ID: ");
+
+        if((usuariologeado = ClienteQueries.comprobarUsuario(sc.nextInt()) ) != null){
+            System.out.println(" BIENVENIDO "+ usuariologeado.getNombre());
+            verCatalogoProductos();
+        } else {
+            System.out.println(" ERROR ID INEXISTENTE");
+            inicioSesionUsuario();
         }
+
 
 
 
@@ -83,17 +91,81 @@ public class Main {
             }
 
             cont++;
-        } while ( cont < 6);
+        } while ( cont < 2);
 
 
     }
 
     public static void seleccionProducto(){
 
-        System.out.println("AGREGA UN PRODUCTO A TU ");
+
+
+    int seleccion;
+
+        ArrayList<CompraProducto> carrito = new ArrayList<>();
+
+        for (Producto p : ProductoQueries.getAllProductos()){
+            System.out.println(p.toString() +"\n");
+        }
+
+
+        while (true){
+
+            System.out.println("SELECCIONAR PRODUCTO: "); // AHORA GUARDARA EL PRODUCTO EN ORDEN DE ARRAY
+            if ((seleccion = sc.nextInt()) == -1){
+                break;
+            }
+
+            if (seleccion > ProductoQueries.getAllProductos().size()){
+                System.out.println("VALOR INVALIDO");
+            } else {
+
+                if (carrito.isEmpty()){
+                    carrito.add(new CompraProducto(1,seleccion,1));
+                } else {
+
+                    boolean flag = false;
+
+                    for (int i = 0; i < carrito.size(); i++) {
+
+                        if (carrito.get(i).getId_producto() == seleccion){
+                            carrito.get(i).setUnidades(carrito.get(i).getUnidades()+1);
+                            System.out.println("COINCIDENCIA");
+                            flag = true;
+                            break;
+                        }
+
+                    }
+
+                    if (flag == false) { // NO SE HAN ENCONTRADO EL PRODUCTO ASI QUE CREAMOS UNA NUEVA PARTE EN EL ARRAY
+                        carrito.add(new CompraProducto(1,seleccion, 1));
+                        System.out.println("AÑADIDO");
+                    }
+
+            }
+
+
+        }
+
+
+        }
+
+        for (int i = 0; i < carrito.size(); i++) {
+
+            System.out.println(carrito.get(i).getId_producto() + " x"+carrito.get(i).getUnidades());
+
+        }
+
+
+
+
+
+
+
 
 
     }
+
 
 
 
