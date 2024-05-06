@@ -5,6 +5,7 @@ import entidades.Compra;
 import entidades.CompraProducto;
 import entidades.Producto;
 import queries.ClienteQueries;
+import queries.CompraQueries;
 import queries.ProductoQueries;
 
 import java.sql.SQLException;
@@ -156,15 +157,29 @@ public class Main {
 
         }
 
+    }
 
+    public static int nuevaCompra(int idcomprador){
 
+        String concepto;
 
+        System.out.println("INTRODUCE EL CONCEPTO DE LA COMPRA:");
+        concepto = sc.next();
 
+        try {
 
+            return CompraQueries.nuevaCompra(concepto, idcomprador);
 
+        } catch (SQLException e) {
+
+            System.err.println("ERROR AL CREAR COMPRA");
+
+        }
 
 
     }
+
+
 
 
 

@@ -10,12 +10,12 @@ DROP TABLE IF EXISTS compra;
 DROP TABLE IF EXISTS cliente;
 
 CREATE TABLE cliente (
-	id INT PRIMARY KEY,
+	id INT PRIMARY KEY auto_increment not null,
 	nombre VARCHAR(100)
 );
 
 CREATE TABLE compra (
-	id INT PRIMARY KEY,
+	id INT PRIMARY KEY not null auto_increment,
 	concepto VARCHAR(300),
 	id_cliente INT,
 	FOREIGN KEY (id_cliente) REFERENCES cliente(id)
@@ -65,3 +65,4 @@ INSERT INTO compra_producto (id_compra, id_producto, unidades) VALUES
 (2, 3, 1),
 (3, 4, 5),
 (4, 1, 1);
+
