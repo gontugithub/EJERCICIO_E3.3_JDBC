@@ -11,8 +11,7 @@ DROP TABLE IF EXISTS cliente;
 
 CREATE TABLE cliente (
 	id INT PRIMARY KEY,
-	nombre VARCHAR(100),
-	password VARCHAR(100)
+	nombre VARCHAR(100)
 );
 
 CREATE TABLE compra (
