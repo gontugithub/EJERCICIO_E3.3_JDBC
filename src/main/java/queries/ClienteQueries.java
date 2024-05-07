@@ -2,8 +2,10 @@ package queries;
 
 import conexion.Conexion;
 import entidades.Cliente;
+import entidades.Producto;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class ClienteQueries {
 
@@ -93,6 +95,35 @@ public class ClienteQueries {
             return clienteinsertado;
 
         }
+
+    }
+
+    public static ArrayList<Cliente> getAllClientes(){
+
+        ArrayList<Cliente> listaClientes = new ArrayList<>();
+
+        try (Connection connection = Conexion.open()) {
+            // CONEXIÓN CORRECTA
+            String query = "select * from cliente";
+            try (PreparedStatement ps = connection.prepareStatement(query)){
+
+                try (ResultSet rs = ps.executeQuery()){
+
+                    while (rs.next()) {
+                        int id = rs.getInt("id");
+                        String nombre = rs.getString("nombre");
+                        listaClientes.add(new Cliente(id, nombre));
+                    }
+
+                }
+
+            }
+
+        } catch (SQLException e) {
+            System.out.println("ERROR");
+        }
+
+        return listaClientes;
 
     }
 }
