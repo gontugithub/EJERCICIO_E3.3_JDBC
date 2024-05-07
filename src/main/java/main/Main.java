@@ -1,7 +1,6 @@
 package main;
 
 import entidades.Cliente;
-import entidades.Compra;
 import entidades.CompraProducto;
 import entidades.Producto;
 import queries.ClienteQueries;

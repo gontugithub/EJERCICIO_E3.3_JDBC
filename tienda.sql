@@ -24,7 +24,7 @@ CREATE TABLE compra (
 );
 
 CREATE TABLE producto (
-	id INT(11) PRIMARY KEY,
+	id INT(11) PRIMARY KEY not null auto_increment,
 	nombre VARCHAR(200),
 	precio DECIMAL(6,2)
 );

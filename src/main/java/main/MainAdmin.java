@@ -13,7 +13,11 @@ public class MainAdmin {
 
 
         try {
-            System.out.println(ClienteQueries.eliminarUsuario(4));
+            System.out.println(ProductoQueries.eliminarProducto(5));
+
+
+
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

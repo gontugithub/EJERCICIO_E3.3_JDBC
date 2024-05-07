@@ -3,10 +3,8 @@ package queries;
 import conexion.Conexion;
 import entidades.Producto;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.imageio.plugins.jpeg.JPEGImageReadParam;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class ProductoQueries {
@@ -164,6 +162,95 @@ public class ProductoQueries {
         }
 
         return listaProductos;
+
+    }
+
+    public static int eliminarProducto(int id) throws SQLException {
+
+        boolean flag = false;
+        int clienteinsertado = -1;
+
+        try (Connection connection = Conexion.open()) {
+            // CONEXIÓN CORRECTA
+            String query = "DELETE FROM producto WHERE id = ?";
+            try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+                ps.setInt(1,id);
+
+                int nRows = ps.executeUpdate();
+
+                flag = nRows == 1;
+
+                clienteinsertado = nRows;
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            return clienteinsertado;
+
+        }
+
+    }
+
+    public static int insertarNuevoProducto(String nombreproducto, double precio) throws SQLException {
+
+        int productoinsertado = -1;
+
+        try (Connection connection = Conexion.open()) {
+            // CONEXIÓN CORRECTA
+            String query = "INSERT INTO producto VALUES(null,?,?)";
+            try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+                ps.setString(1, nombreproducto);
+                ps.setDouble(2, precio);
+
+                int nRows = ps.executeUpdate();
+
+                try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+
+                    if (generatedKeys.next()) {
+                        productoinsertado = generatedKeys.getInt(1);
+
+                    }
+
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            return productoinsertado;
+
+        }
+
+
+    }
+
+    public static int modificarProducto(String nombre, int id, double precio) throws SQLException {
+
+        boolean flag = false;
+        int clienteinsertado = -1;
+
+        try (Connection connection = Conexion.open()) {
+            // CONEXIÓN CORRECTA
+            String query = "UPDATE producto SET nombre = ?, precio = ? WHERE id = ?";
+            try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+                ps.setString(1, nombre);
+                ps.setDouble(2,precio);
+                ps.setInt(3,id);
+
+                int nRows = ps.executeUpdate();
+
+                flag = nRows == 1;
+
+                clienteinsertado = nRows;
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            return clienteinsertado;
+
+        }
 
     }
 
