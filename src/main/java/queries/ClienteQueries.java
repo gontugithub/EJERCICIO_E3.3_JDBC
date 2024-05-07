@@ -36,4 +36,38 @@ public class ClienteQueries {
         return usuario;
     }
 
+
+    public static int insertarNuevoUsuario(String nombre) throws SQLException {
+
+        int clienteinsertado = -1;
+
+        try (Connection connection = Conexion.open()) {
+            // CONEXIÓN CORRECTA
+            String query = "INSERT INTO cliente VALUES(null,?)";
+            try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
+                ps.setString(1,nombre);
+
+                int nRows = ps.executeUpdate();
+
+                try ( ResultSet generatedKeys = ps.getGeneratedKeys()){
+
+                    if (generatedKeys.next()) {
+                        clienteinsertado = generatedKeys.getInt(1);
+
+                    }
+
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            return clienteinsertado;
+
+        }
+
+
+    }
+
+
 }
