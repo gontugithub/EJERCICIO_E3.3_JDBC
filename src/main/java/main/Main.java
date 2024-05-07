@@ -5,6 +5,7 @@ import entidades.Compra;
 import entidades.CompraProducto;
 import entidades.Producto;
 import queries.ClienteQueries;
+import queries.CompraProductoQueries;
 import queries.CompraQueries;
 import queries.ProductoQueries;
 
@@ -12,18 +13,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Main {
+public class
+Main {
 
     static Scanner sc = new Scanner(System.in);
+    static int idusuariologeado;
     public static void main(String[] args) throws SQLException {
 
 
 
 
     inicioSesionUsuario();
-    seleccionProducto();
-
-
+    realizarpago(seleccionProducto());
 
 
 
@@ -40,11 +41,15 @@ public class Main {
 
         if((usuariologeado = ClienteQueries.comprobarUsuario(sc.nextInt()) ) != null){
             System.out.println(" BIENVENIDO "+ usuariologeado.getNombre());
+            idusuariologeado = usuariologeado.getId();
             verCatalogoProductos();
         } else {
             System.out.println(" ERROR ID INEXISTENTE");
             inicioSesionUsuario();
         }
+        sc.nextLine();
+
+
 
 
 
@@ -80,12 +85,14 @@ public class Main {
                 case 4:
                     System.out.print("INTRODUCE LA CADENA QUE QUIERES BUSCAR\n >>  ");
                     list = ProductoQueries.getProductosFiltradoCadena(sc.next());
+                    sc.nextLine();
                     break;
                 default:
                     System.out.println("ERROR");
                     break;
 
             }
+            sc.nextLine();
             System.out.println();
             for (Producto p : list){
                 System.out.println(p.toString() +"\n");
@@ -97,7 +104,9 @@ public class Main {
 
     }
 
-    public static void seleccionProducto(){
+    public static ArrayList<CompraProducto> seleccionProducto(){
+
+       int idcompra = nuevaCompra(idusuariologeado);
 
 
 
@@ -117,12 +126,14 @@ public class Main {
                 break;
             }
 
+            sc.nextLine();
+
             if (seleccion > ProductoQueries.getAllProductos().size()){
                 System.out.println("VALOR INVALIDO");
             } else {
 
                 if (carrito.isEmpty()){
-                    carrito.add(new CompraProducto(1,seleccion,1));
+                    carrito.add(new CompraProducto(idcompra,seleccion,1));
                 } else {
 
                     boolean flag = false;
@@ -139,7 +150,7 @@ public class Main {
                     }
 
                     if (flag == false) { // NO SE HAN ENCONTRADO EL PRODUCTO ASI QUE CREAMOS UNA NUEVA PARTE EN EL ARRAY
-                        carrito.add(new CompraProducto(1,seleccion, 1));
+                        carrito.add(new CompraProducto(idcompra,seleccion, 1));
                         System.out.println("AÑADIDO");
                     }
 
@@ -157,18 +168,21 @@ public class Main {
 
         }
 
+        return carrito;
+
     }
 
-    public static int nuevaCompra(int idcomprador){
+    public static int nuevaCompra(int idcomprador) {
 
         String concepto;
+        int resultado = -1;
 
         System.out.println("INTRODUCE EL CONCEPTO DE LA COMPRA:");
-        concepto = sc.next();
+        concepto = sc.nextLine();
 
         try {
 
-            return CompraQueries.nuevaCompra(concepto, idcomprador);
+            resultado = CompraQueries.nuevaCompra(concepto, idcomprador);
 
         } catch (SQLException e) {
 
@@ -176,9 +190,26 @@ public class Main {
 
         }
 
-
+        return resultado;
     }
 
+     public static void realizarpago(ArrayList<CompraProducto> carrito){
+
+
+         for (int i = 0; i < carrito.size(); i++) {
+
+             try {
+                 CompraProductoQueries.insertarCompraProducto(carrito.get(i).getId_compra(),carrito.get(i).getId_producto(),carrito.get(i).getUnidades());
+             } catch (SQLException e) {
+                e.printStackTrace();
+             }
+
+         }
+
+
+
+
+     }
 
 
 
