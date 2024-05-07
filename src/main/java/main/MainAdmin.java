@@ -12,10 +12,11 @@ public class MainAdmin {
     public static void main(String[] args) {
 
 
-        for (Cliente c : ClienteQueries.getAllClientes()){
-            System.out.println(c.toString() +"\n");
+        try {
+            System.out.println(ClienteQueries.eliminarUsuario(4));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-
 
     }
 
