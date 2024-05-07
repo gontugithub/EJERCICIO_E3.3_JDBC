@@ -2,10 +2,8 @@ package queries;
 
 import conexion.Conexion;
 import entidades.Cliente;
-import entidades.Producto;
 
 import java.sql.*;
-import java.util.ArrayList;
 
 public class ClienteQueries {
 
@@ -26,7 +24,7 @@ public class ClienteQueries {
                     while (rs.next()) {
                         int id = rs.getInt("id");
                         String nombre = rs.getString("nombre");
-                        usuario = new Cliente(id,nombre);
+                        usuario = new Cliente(id, nombre);
                     }
                 }
             }
@@ -44,12 +42,12 @@ public class ClienteQueries {
         try (Connection connection = Conexion.open()) {
             // CONEXIÓN CORRECTA
             String query = "INSERT INTO cliente VALUES(null,?)";
-            try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
-                ps.setString(1,nombre);
+            try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+                ps.setString(1, nombre);
 
                 int nRows = ps.executeUpdate();
 
-                try ( ResultSet generatedKeys = ps.getGeneratedKeys()){
+                try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
 
                     if (generatedKeys.next()) {
                         clienteinsertado = generatedKeys.getInt(1);
@@ -70,4 +68,31 @@ public class ClienteQueries {
     }
 
 
+    public static int modificarUsuario(String nombre, int id) throws SQLException {
+
+        boolean flag = false;
+        int clienteinsertado = -1;
+
+        try (Connection connection = Conexion.open()) {
+            // CONEXIÓN CORRECTA
+            String query = "UPDATE cliente SET nombre = ? WHERE id = ?";
+            try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+                ps.setString(1, nombre);
+                ps.setInt(2,id);
+
+                int nRows = ps.executeUpdate();
+
+                flag = nRows == 1;
+
+                clienteinsertado = nRows;
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            return clienteinsertado;
+
+        }
+
+    }
 }
