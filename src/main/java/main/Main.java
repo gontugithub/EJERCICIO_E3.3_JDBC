@@ -20,10 +20,10 @@ Main {
     public static void main(String[] args) throws SQLException {
 
 
+        System.out.println("\n    BIENVENIDO A NUESTRA TIENDA\n ");
 
-
-    inicioSesionUsuario();
-    realizarpago(seleccionProducto());
+        inicioSesionUsuario();
+        realizarpago(seleccionProducto());
 
 
 
@@ -49,6 +49,36 @@ Main {
         sc.nextLine();
 
 
+
+
+
+
+
+    }
+
+    public static void menu(){
+
+        System.out.print("\n  > QUE DESEA HACER < \n\n" +
+                "   [1] VER CATALOGO PRODUCTOS \n" +
+                "   [2] AÑADIR PRODUCTOS A LA COMPRA\n" +
+                "   [3] PAGAR E IMPRIMIR TICKET\n" +
+                "   [4] CERRAR PROGRAMA\n      >> " );
+
+        switch (sc.nextInt()){
+
+
+            case 1:
+                verCatalogoProductos();
+                break;
+
+            case 2:
+                seleccionProducto();
+                break;
+
+            case 3:
+                break;
+
+        }
 
 
 
