@@ -8,6 +8,11 @@ import queries.CompraProductoQueries;
 import queries.CompraQueries;
 import queries.ProductoQueries;
 
+import java.awt.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -15,17 +20,17 @@ import java.util.Scanner;
 public class
 Main {
 
+    static ArrayList<CompraProducto> carrito = new ArrayList<>();
     static Scanner sc = new Scanner(System.in);
     static int idusuariologeado;
+    static int numerocompra = -1;
     public static void main(String[] args) throws SQLException {
 
 
         System.out.println("\n    BIENVENIDO A NUESTRA TIENDA\n ");
 
-        inicioSesionUsuario();
-        realizarpago(seleccionProducto());
 
-
+    inicioSesionUsuario();
 
 
 
@@ -41,7 +46,7 @@ Main {
         if((usuariologeado = ClienteQueries.comprobarUsuario(sc.nextInt()) ) != null){
             System.out.println(" BIENVENIDO "+ usuariologeado.getNombre());
             idusuariologeado = usuariologeado.getId();
-            verCatalogoProductos();
+           menu();
         } else {
             System.out.println(" ERROR ID INEXISTENTE");
             inicioSesionUsuario();
@@ -58,27 +63,40 @@ Main {
 
     public static void menu(){
 
-        System.out.print("\n  > QUE DESEA HACER < \n\n" +
-                "   [1] VER CATALOGO PRODUCTOS \n" +
-                "   [2] AÑADIR PRODUCTOS A LA COMPRA\n" +
-                "   [3] PAGAR E IMPRIMIR TICKET\n" +
-                "   [4] CERRAR PROGRAMA\n      >> " );
+        boolean flag = true;
 
-        switch (sc.nextInt()){
+        do {
+
+            System.out.print("\n  > QUE DESEA HACER < \n\n" +
+                    "   [1] VER CATALOGO PRODUCTOS \n" +
+                    "   [2] AÑADIR PRODUCTOS A LA COMPRA\n" +
+                    "   [3] PAGAR E IMPRIMIR TICKET\n" +
+                    "   [4] CERRAR PROGRAMA\n      >> " );
+
+            switch (sc.nextInt()){
 
 
-            case 1:
-                verCatalogoProductos();
-                break;
+                case 1:
+                    verCatalogoProductos();
+                    break;
 
-            case 2:
-                seleccionProducto();
-                break;
+                case 2:
+                    carrito = seleccionProducto(carrito);
+                    break;
 
-            case 3:
-                break;
+                case 3:
+                    realizarpago(carrito);
+                    break;
 
-        }
+                case 4:
+                    flag = false;
+                    break;
+
+            }
+
+        } while (flag);
+
+
 
 
 
@@ -89,10 +107,10 @@ Main {
 
     public static void verCatalogoProductos(){
 
-        int cont = 0;
+
         ArrayList<Producto> list = new ArrayList<>();
 
-        do {
+
 
             System.out.print(" [1] ORGANIZADO MAS CARO A MAS BARATO\n" +
                     " [2] ORGANIZADO MAS BARATO A MAS CARO\n" +
@@ -123,25 +141,33 @@ Main {
             }
             sc.nextLine();
             System.out.println();
+
             for (Producto p : list){
                 System.out.println(p.toString() +"\n");
             }
 
-            cont++;
-        } while ( cont < 2);
+
 
 
     }
 
-    public static ArrayList<CompraProducto> seleccionProducto(){
+    public static ArrayList<CompraProducto> seleccionProducto(ArrayList<CompraProducto> carrito){
 
-       int idcompra = nuevaCompra(idusuariologeado);
+        int idcompra;
+
+        if (numerocompra == -1){
+            idcompra = nuevaCompra(idusuariologeado);
+            numerocompra = idcompra;
+        }else {
+            idcompra = numerocompra;
+        }
+
+
+
 
 
 
     int seleccion;
-
-        ArrayList<CompraProducto> carrito = new ArrayList<>();
 
         for (Producto p : ProductoQueries.getAllProductos()){
             System.out.println(p.toString() +"\n");
@@ -203,6 +229,8 @@ Main {
 
     public static int nuevaCompra(int idcomprador) {
 
+        sc.nextLine();
+
         String concepto;
         int resultado = -1;
 
@@ -224,11 +252,20 @@ Main {
 
      public static void realizarpago(ArrayList<CompraProducto> carrito){
 
+        String path = "ticketcompra"+numerocompra+".txt";
+         int  numerocompra=carrito.get(0).getId_compra();;
+         File ticket = new File(path);
+         String textoticket = " TICKET COMPRA "+numerocompra+"\n";
 
          for (int i = 0; i < carrito.size(); i++) {
 
              try {
                  CompraProductoQueries.insertarCompraProducto(carrito.get(i).getId_compra(),carrito.get(i).getId_producto(),carrito.get(i).getUnidades());
+                 textoticket += " -" +carrito.get(i).getId_producto()+" x"+carrito.get(i).getUnidades()+"\n";
+
+
+
+
              } catch (SQLException e) {
                 e.printStackTrace();
              }
@@ -236,6 +273,28 @@ Main {
          }
 
 
+
+         try {
+             if (!ticket.exists()){
+                 ticket.createNewFile();
+             }
+
+             System.out.println("  Imprimiendo ticket...");
+
+             FileWriter escritor = new FileWriter(ticket);
+             PrintWriter pw = new PrintWriter(escritor);
+
+             pw.print(textoticket);
+             pw.close();
+
+             Desktop dt= Desktop.getDesktop();
+             dt.open(ticket);
+
+
+
+         } catch (IOException e) {
+             throw new RuntimeException(e);
+         }
 
 
      }
