@@ -1,0 +1,5 @@
+ TICKET COMPRA 6
+ -1 x3
+ -2 x3
+ -3 x4
+ -4 x1
