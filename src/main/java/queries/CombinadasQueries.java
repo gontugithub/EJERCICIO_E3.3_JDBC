@@ -13,9 +13,9 @@ public class CombinadasQueries {
 
 
 
-    public static ArrayList<Producto> mostrarcompraprecionombreunidades(int id_compra){
+    public static ArrayList<ArrayList<Object>> mostrarcompraprecionombreunidades(int id_compra){
 
-        ArrayList<Producto> listaProductos = new ArrayList<>();
+        ArrayList<ArrayList<Object>> listaticket  = new ArrayList<>();
 
         try (Connection connection = Conexion.open()) {
             // CONEXIÓN CORRECTA
@@ -28,11 +28,18 @@ public class CombinadasQueries {
                 try (ResultSet rs = ps.executeQuery()){
 
                     while (rs.next()) {
-                        int id = rs.getInt("unidades");
+
+                        ArrayList<Object> fila = new ArrayList<>();
+
+                        int unidades = rs.getInt("unidades");
                         String nombre = rs.getString("nombre");
                         double precio = rs.getDouble("precio");
 
-                        listaProductos.add(new Producto(id, nombre, precio));
+                        fila.add(unidades);
+                        fila.add(nombre);
+                        fila.add(precio);
+
+                        listaticket.add(fila);
                     }
 
                 }
@@ -43,7 +50,7 @@ public class CombinadasQueries {
             System.out.println("ERROR");
         }
 
-        return listaProductos;
+        return listaticket;
 
     }
 }

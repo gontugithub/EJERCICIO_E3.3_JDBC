@@ -3,10 +3,7 @@ package main;
 import entidades.Cliente;
 import entidades.CompraProducto;
 import entidades.Producto;
-import queries.ClienteQueries;
-import queries.CompraProductoQueries;
-import queries.CompraQueries;
-import queries.ProductoQueries;
+import queries.*;
 
 import java.awt.*;
 import java.io.File;
@@ -15,6 +12,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class
@@ -255,14 +253,14 @@ Main {
         String path = "ticketcompra"+numerocompra+".txt";
          int  numerocompra=carrito.get(0).getId_compra();;
          File ticket = new File(path);
-         String textoticket = " TICKET COMPRA "+numerocompra+"\n";
+         String textoticket = " TICKET COMPRA " + numerocompra + "\n";
+         ArrayList<ArrayList<Object>> lista = new ArrayList<>();
+         int total = 0;
 
          for (int i = 0; i < carrito.size(); i++) {
 
              try {
                  CompraProductoQueries.insertarCompraProducto(carrito.get(i).getId_compra(),carrito.get(i).getId_producto(),carrito.get(i).getUnidades());
-                 textoticket += " -" +carrito.get(i).getId_producto()+" x"+carrito.get(i).getUnidades()+"\n";
-
 
 
 
@@ -272,7 +270,18 @@ Main {
 
          }
 
+         lista = CombinadasQueries.mostrarcompraprecionombreunidades(numerocompra);
 
+         for (int i = 0; i < lista.size(); i++) {
+
+             double operacion = (int) lista.get(i).get(0) * (double)lista.get(i).get(2);
+
+            textoticket += "   - " +lista.get(i).get(1) + " x" + lista.get(i).get(0) + " " + operacion +"€\n";
+            total += operacion;
+
+         }
+
+         textoticket += "\n TOTAL: " + total + "€";
 
          try {
              if (!ticket.exists()){
